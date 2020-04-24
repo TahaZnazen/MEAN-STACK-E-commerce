@@ -23,7 +23,7 @@ app.all("*", (req, res, next) => {
   err.status = "fail";
   err.statusCode = 404;
   err.message = `Can't find ${req.originalUrl} on this server`;
-  next(err);
+  next();
 });
 
 app.use((err, req, res, next) => {

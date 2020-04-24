@@ -1,5 +1,10 @@
 const Items = require("../models/ItemsModel");
 
+const catchAsync = (fn) => {
+  return (req, res, next) => {
+    fn(req, res, next).catch(next);
+  };
+};
 exports.findAllItems = async (req, res) => {
   try {
     const items = await Items.find();
