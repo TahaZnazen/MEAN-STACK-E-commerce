@@ -1,56 +1,29 @@
 const Items = require("../models/ItemsModel");
+const catchAsync = require("../utils/catchAsync");
 
-const catchAsync = (fn) => {
-  return (req, res, next) => {
-    fn(req, res, next).catch(next);
-  };
-};
-exports.findAllItems = async (req, res) => {
-  try {
-    const items = await Items.find();
-    res.status(201).json(items);
-  } catch (err) {
-    res.json(err);
-  }
-};
+exports.findAllItems = catchAsync(async (req, res) => {
+  const items = await Items.find();
+  res.status(201).json(items);
+});
 
-exports.findOneItem = async (req, res) => {
-  try {
-    const item = await Items.findById(req.params.id);
-    res.json({ item });
-  } catch (err) {
-    res.json(err);
-  }
-};
+exports.findOneItem = catchAsync(async (req, res) => {
+  const item = await Items.findById(req.params.id);
+  res.json({ item });
+});
 
-exports.addItem = async (req, res) => {
-  try {
-    await Items.create(req.body);
+exports.addItem = catchAsync(async (req, res) => {
+  await Items.create(req.body);
+  res.json({ message: "item added" });
+});
 
-    res.json({ message: "item added" });
-  } catch (err) {
-    res.json(err);
-  }
-};
+exports.updateItem = catchAsync(async (req, res) => {
+  const updatedItem = await Items.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+  res.json({ updatedItem });
+});
 
-exports.updateItem = async (req, res) => {
-  try {
-    const updatedItem = await Items.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-
-    res.json({ updatedItem });
-  } catch (err) {
-    res.json({ err });
-  }
-};
-
-exports.deleteItem = async (req, res) => {
-  try {
-    await Items.findByIdAndRemove(req.params.id);
-    res.json({ message: "done" });
-  } catch (err) {
-    console.log(err);
-    res.json(err);
-  }
-};
+exports.deleteItem = catchAsync(async (req, res) => {
+  await Items.findByIdAndRemove(req.params.id);
+  res.json({ message: "item deleted" });
+});
